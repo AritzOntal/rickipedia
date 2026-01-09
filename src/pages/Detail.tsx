@@ -10,6 +10,9 @@ export const Detail = () => {
     const [character, setCharacter] = useState<Character | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
+    // USAMOS useEffect para poder envolver una función asíncrona (no puede devolver una promesa)
+    //useEffect sirve para ejecutar algo despues de que React haya pintado la página
+
     useEffect(() => {
         const loadChar = async () => {
             if (!id) return;
@@ -24,8 +27,8 @@ export const Detail = () => {
             }
         };
 
-        loadChar;
-    }, [id]);
+        loadChar();
+    }, [id]); //REACT CONTROLARÁ QUE SI CAMBIA EL ID SE VUELVA A EJECUTAR useEffect.
 
     if (loading) return <div className="loading-msg">🌀 Cargando ficha...</div>;
     if (!character) return <div className="error-msg">Personaje no encontrado</div>;
