@@ -62,6 +62,7 @@ export const Home = () => {
                             <p>
                                 {char.species} - {char.status}
                             </p>
+                            
                         </div>
                     </Link>
                 ))}

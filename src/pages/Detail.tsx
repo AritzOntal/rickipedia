@@ -1,0 +1,83 @@
+import { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { getCharacterById } from "../data/api";
+import type { Character } from "../types/rickandmorty";
+import "../App.css";
+
+export const Detail = () => {
+    // useParams para pillar el id del Personaje
+    const { id } = useParams();
+    const [character, setCharacter] = useState<Character | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    useEffect(() => {
+        const loadChar = async () => {
+            if (!id) return;
+            try {
+                setLoading(true);
+                const data = await getCharacterById(id);
+                setCharacter(data);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadChar;
+    }, [id]);
+
+    if (loading) return <div className="loading-msg">🌀 Cargando ficha...</div>;
+    if (!character) return <div className="error-msg">Personaje no encontrado</div>;
+
+    return (
+        <div className="detail-container">
+            <Link to="/" className="back-button">
+                ⬅ Volver al listado
+            </Link>
+
+            {/* Tarjeta de Detalle */}
+            <div className="detail-card">
+                <img
+                    src={character.image}
+                    alt={character.name}
+                    className="detail-image"
+                />
+
+                <div className="detail-info">
+                    <h1>{character.name}</h1>
+
+                    <div className="detail-grid">
+                        <div className="detail-item">
+                            <span className="label">Estado:</span>
+                            <span className="value" style={{ color: character.status === 'Alive' ? '#55cc44' : 'red' }}>
+                                {character.status}
+                            </span>
+                        </div>
+
+                        <div className="detail-item">
+                            <span className="label">Especie:</span>
+                            <span className="value">{character.species}</span>
+                        </div>
+
+                        <div className="detail-item">
+                            <span className="label">Género:</span>
+                            <span className="value">{character.status}</span>
+                        </div>
+
+                        <div className="detail-item">
+                            <span className="label">Origen:</span>
+                            <span className="value">{character.location.name}</span>
+                        </div>
+
+                        <div className="detail-item">
+                            <span className="label">Ubicación:</span>
+                            <span className="value">{character.location.url}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
