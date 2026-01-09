@@ -189,3 +189,40 @@
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* --- BUSCADOR --- */
+.search-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 15px 20px;
+  font-size: 1.2rem;
+  border-radius: 50px;
+  border: 2px solid #555;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-input:focus {
+  border-color: #97ce4c;
+  box-shadow: 0 0 15px rgba(151, 206, 76, 0.5);
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.search-input::placeholder {
+  color: #aaa;
+}
+
+.no-results {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #999;
+    margin-top: 50px;
+}
