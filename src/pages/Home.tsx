@@ -10,6 +10,9 @@ export const Home = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
+    //ACTUALIZACIÓN DE LA BÚSQUEDA
+    const [searchTerm, setSearchTerm] = useState("");
+
     // LO QUE PASA AL INICIAR LA PÁGINA
     useEffect(() => {
         //FUNCIÓN AUXILIAR PARA PEDIR DATOS
@@ -28,9 +31,13 @@ export const Home = () => {
         loadData();
     }, []); // LOS CORCHETES LE DICEN QUE LO EJECUTE SOLO UNA VEZ AL ENTRAR
 
+    const filteredCharacters = characters.filter((char) =>
+        char.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
 
     //RENDERIZADO
-    
+
     // Si está cargando
     if (loading)
         return <div className="loading-msg">🌀 Cargando datos...</div>;
@@ -43,9 +50,24 @@ export const Home = () => {
     return (
         <div>
             <h1 className="home-title">Personajes de Rick y Morty</h1>
-            
+
+            {/* Barra de Búsqueda */}
+            <div className="search-container">
+                <input
+                    type="text"
+                    placeholder="🔍 Busca un personaje..."
+                    className="search-input"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                />
+            </div>
+
+            {filteredCharacters.length === 0 && (
+                <p className="no-results">No se han encontrado personajes con ese nombre.</p>
+            )}
+
             <div className="characters-grid">
-                {characters.map((char) => (
+                {filteredCharacters.map((char) => (
                     <Link
                         to={`/character/${char.id}`}
                         key={char.id} //identifica la tarjeta (usamos el id)
@@ -62,7 +84,7 @@ export const Home = () => {
                             <p>
                                 {char.species} - {char.status}
                             </p>
-                            
+
                         </div>
                     </Link>
                 ))}
