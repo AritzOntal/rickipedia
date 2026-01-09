@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Home } from "./pages/Home";
 import "./App.css";
+import {Detail} from "./pages/Detail";
 
 function App() {
   return (
@@ -16,7 +17,7 @@ function App() {
       <div className="main-container">
         <Routes>
           <Route path="/" element={<Home />} />
-
+          <Route path="/character/:id" element={<Detail />} />
         </Routes>
       </div>
     </BrowserRouter>
@@ -24,3 +25,5 @@ function App() {
 }
 
 export default App;
+
+// Sin este BrowseRouter las etiquetas Link y Routes nunca funcionarán
