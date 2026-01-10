@@ -9,7 +9,7 @@ function App() {
       {/* BARRA DE NAVEGACIÓN */}
       <nav className="navbar">
         <Link to="/" className="nav-link">
-          🛸 Inicio / Wiki Rick & Morty
+          🛸 Inicio
         </Link>
       </nav>
 
