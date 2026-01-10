@@ -13,14 +13,17 @@ export const Home = () => {
     //ACTUALIZACIÓN DE LA BÚSQUEDA
     const [searchTerm, setSearchTerm] = useState("");
 
-    // LO QUE PASA AL INICIAR LA PÁGINA
+    //ACTUALIZACIÓN DE LA PÁGINA
+    const [page, setPage] = useState<number>(1);
+
+    // LO QUE PASA AL INICIAR LA PÁGINA 
     useEffect(() => {
         //FUNCIÓN AUXILIAR PARA PEDIR DATOS
         const loadData = async () => {
             try {
                 setLoading(true); // ACTIVAMOS "CARGANDO"
-                const data = await getCharacters(1); // LLAMAMOS A LA FUNCION
-                setCharacters(data.results); //RESULTADOS GUARDADOS
+                const data = await getCharacters(page); // LLAMAMOS A LA FUNCION
+                setCharacters(data.results);//RESULTADOS GUARDADOS
             } catch (err) {
                 setError("Error al cargar los personajes.");
             } finally {
@@ -29,12 +32,14 @@ export const Home = () => {
         };
 
         loadData();
-    }, []); // LOS CORCHETES LE DICEN QUE LO EJECUTE SOLO UNA VEZ AL ENTRAR
+    }, [page]); // LOS CORCHETES LE DICEN QUE LO EJECUTE SOLO UNA VEZ AL ENTRAR
 
     const filteredCharacters = characters.filter((char) =>
         char.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    const handleNextPage = () => setPage(page + 1);
+    const handlePrevPage = () => setPage(page - 1);
 
     //RENDERIZADO
 
@@ -62,6 +67,9 @@ export const Home = () => {
                 />
             </div>
 
+            {/* Mostramos en qué página estamos */}
+            <p style={{ textAlign: 'center', color: '#999' }}>Página {page}</p>
+
             {filteredCharacters.length === 0 && (
                 <p className="no-results">No se han encontrado personajes con ese nombre.</p>
             )}
@@ -88,6 +96,22 @@ export const Home = () => {
                         </div>
                     </Link>
                 ))}
+            </div>
+            <div className="pagination-container">
+                <button 
+                    onClick={handlePrevPage} 
+                    disabled={page === 1} // Desactivar si estamos en la 1
+                    className="pagination-btn"
+                >
+                    ⬅ Anterior
+                </button>
+
+                <button 
+                    onClick={handleNextPage}
+                    className="pagination-btn"
+                >
+                    Siguiente ➡
+                </button>
             </div>
         </div>
     );
