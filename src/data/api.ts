@@ -21,11 +21,9 @@ export const getCharacterById = async (id: string): Promise<Character> => {
   return response.json();
 };
 
-// OBTENER EPISODIOS
-export const getEpisodes = async () => {
-  const response = await fetch(`${BASE_URL}/episode`);
-  if (!response.ok) {
-    throw new Error("Error al obtener episodios");
-  }
-  return response.json();
+// Función para obtener la localización extra
+export const getLocation = async (url: string) => {
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
 };
