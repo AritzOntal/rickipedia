@@ -50,7 +50,7 @@ export const Home = () => {
         return matchName && matchStatus;
     });
 
-    // Luego ordenamos el resultado alfabéticamente
+    // Ordenamos el resultado alfabéticamente
     if (sortOrder === "asc") {
         processedCharacters.sort((a, b) => a.name.localeCompare(b.name));
     } else {
@@ -75,18 +75,24 @@ if (error) return <ErrorMessage error={error} />;
         <div>
             <h1 className="home-title">Personajes de Rick y Morty</h1>
 
-            {/* ZONA DE CONTROLES: Aquí metemos el buscador y los dos selectores */}
+            {/* Aquí metemos el buscador y los dos selectores */}
             <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginBottom: '20px', flexWrap: 'wrap' }}>
                 <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
                 <FilterSelect statusFilter={statusFilter} onFilterChange={setStatusFilter} />
                 <SortSelect sortOrder={sortOrder} onSortChange={setSortOrder} />
             </div>
 
-            {/* Mostramos en qué página estamos */}
-            <p style={{ textAlign: 'center', color: '#999' }}>Página {page}</p>
+            {/* Mostramos en qué página estamos y la retralimentacion inmediata */}
+            <div style={{ textAlign: 'center', color: '#999', marginBottom: '20px' }}>
+                <p>Página {page}</p>
+                <p style={{ fontWeight: 'bold', color: '#646cff' }}>
+                    Se han encontrado {processedCharacters.length} personajes
+                </p>
+            </div>
 
+            {/* MENSAJE SI NO HAY RESULTADOS */}
             {processedCharacters.length === 0 && (
-                <p className="no-results">No se han encontrado personajes con ese nombre.</p>
+                <p className="no-results">No se han encontrado personajes con esos filtros.</p>
             )}
 
             <div className="characters-grid">
