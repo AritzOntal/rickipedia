@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { getCharacters } from "../data/api";
 import type { Character } from "../types/rickandmorty";
 import "../App.css";
+import { Loader } from "../components/Loader";
+import { ErrorMessage } from "../components/ErrorMessage";
+import { SearchBar } from "../components/SearchBar";
+import { CharacterCard } from "../components/CharacterCard";
+
+import { FilterSelect } from "../components/FilterSelect";
+import { SortSelect } from "../components/SortSelect";
 
 export const Home = () => {
+
     //MEMORIA DEL COMPONENTE (ESTADOS)
     const [characters, setCharacters] = useState<Character[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
@@ -12,6 +19,8 @@ export const Home = () => {
 
     //ACTUALIZACIÓN DE LA BÚSQUEDA
     const [searchTerm, setSearchTerm] = useState("");
+    const [statusFilter, setStatusFilter] = useState<string>("");
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
     //ACTUALIZACIÓN DE LA PÁGINA
     const [page, setPage] = useState<number>(1);
@@ -32,71 +41,60 @@ export const Home = () => {
         };
 
         loadData();
+
     }, [page]); // LOS CORCHETES LE DICEN QUE LO EJECUTE SOLO UNA VEZ AL ENTRAR
 
-    const filteredCharacters = characters.filter((char) =>
-        char.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    let processedCharacters = characters.filter((char) => {
+        const matchName = char.name.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchStatus = statusFilter === "" ? true : char.status === statusFilter;
+        return matchName && matchStatus;
+    });
+
+    // Luego ordenamos el resultado alfabéticamente
+    if (sortOrder === "asc") {
+        processedCharacters.sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+        processedCharacters.sort((a, b) => b.name.localeCompare(a.name));
+    }
 
     const handleNextPage = () => setPage(page + 1);
     const handlePrevPage = () => setPage(page - 1);
 
+
+
     //RENDERIZADO
 
     // Si está cargando
-    if (loading)
-        return <div className="loading-msg">🌀 Cargando datos...</div>;
+    if (loading) return <Loader message="🌀 Cargando datos..." />;
 
     // Si hay error
-    if (error)
-        return <div className="error-msg">⚠️ {error}</div>;
+if (error) return <ErrorMessage error={error} />;
 
     // Si todo va bien, mostramos la lista
     return (
         <div>
             <h1 className="home-title">Personajes de Rick y Morty</h1>
 
-            {/* Barra de Búsqueda */}
-            <div className="search-container">
-                <input
-                    type="text"
-                    placeholder="🔍 Busca un personaje..."
-                    className="search-input"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
+            {/* ZONA DE CONTROLES: Aquí metemos el buscador y los dos selectores */}
+            <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginBottom: '20px', flexWrap: 'wrap' }}>
+                <SearchBar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+                <FilterSelect statusFilter={statusFilter} onFilterChange={setStatusFilter} />
+                <SortSelect sortOrder={sortOrder} onSortChange={setSortOrder} />
             </div>
 
             {/* Mostramos en qué página estamos */}
             <p style={{ textAlign: 'center', color: '#999' }}>Página {page}</p>
 
-            {filteredCharacters.length === 0 && (
+            {processedCharacters.length === 0 && (
                 <p className="no-results">No se han encontrado personajes con ese nombre.</p>
             )}
 
             <div className="characters-grid">
-                {filteredCharacters.map((char) => (
-                    <Link
-                        to={`/character/${char.id}`}
-                        key={char.id} //identifica la tarjeta (usamos el id)
-                        className="card-link"
-                    >
-                        {/* Tarjeta Individual */}
-                        <div className="character-card">
-                            <img
-                                src={char.image}
-                                alt={char.name}
-                                className="character-image"
-                            />
-                            <h3>{char.name}</h3>
-                            <p>
-                                {char.species} - {char.status}
-                            </p>
-
-                        </div>
-                    </Link>
-                ))}
-            </div>
+    {processedCharacters.map((char) => (
+        // Aquí estamos usando el molde y pasándole los datos en la prop 'character'
+        <CharacterCard key={char.id} character={char} />
+    ))}
+</div>
             <div className="pagination-container">
                 <button 
                     onClick={handlePrevPage} 
