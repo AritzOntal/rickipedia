@@ -2,16 +2,13 @@ import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import { Home } from "./pages/Home";
 import "./App.css";
 import {Detail} from "./pages/Detail";
+import { Navbar } from "./components/navbar";
 
 function App() {
   return (
     <BrowserRouter>
       {/* BARRA DE NAVEGACIÓN */}
-      <nav className="navbar">
-        <Link to="/" className="nav-link">
-          🛸 Inicio
-        </Link>
-      </nav>
+      <Navbar />
 
       {/* CONTENIDO CAMBIANTE (Rutas) */}
       <div className="main-container">
